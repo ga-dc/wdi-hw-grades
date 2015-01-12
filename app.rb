@@ -1,7 +1,9 @@
 require 'sinatra'
 require 'rest-client'
 require 'json'
+require 'google_drive'
 require './env' if File.exists?('env.rb')
+require 'pry'
 
 enable :sessions
 set :session_secret, ENV['GH_SESSION_SECRET']
@@ -13,7 +15,14 @@ URL = ENV['GH_URL']
 get '/' do
   session['access_token'] ||= ''
   if session['user_name']
-    @grade = '73%'
+    sesh = GoogleDrive.login_with_oauth(ENV['GOOGLE_TOKEN'])
+    ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[1]
+    (2..27).each do |i|
+      un = ws[i, 3]
+      if un == session['user_name']
+	@grade = ws[i,4]
+      end
+    end
   end
   @client_id = CLIENT_ID
   @access_token = session['access_token']
