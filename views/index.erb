@@ -20,6 +20,13 @@
       <% if @grade %>
 	Your grade is:
 	<h1><%= @grade %></h1>
+        <% if @missing %>
+          <ul>
+	  <% @missing.each do |hw| %>
+	    <li><%= hw %></li>
+	  <% end %>
+	  </ul>
+	<% end %>
       <% end %>
     </section>
   </body>

@@ -15,12 +15,28 @@ URL = ENV['GH_URL']
 get '/' do
   session['access_token'] ||= ''
   if session['user_name']
-    sesh = GoogleDrive.login_with_oauth(ENV['GOOGLE_TOKEN'])
+    client = Google::APIClient.new
+    auth = client.authorization
+    auth.client_id = ENV['GOOGLE_CLIENT_ID']
+    auth.client_secret = ENV['GOOGLE_SECRET']
+    auth.scope =
+      "https://www.googleapis.com/auth/drive " +
+      "https://spreadsheets.google.com/feeds/"
+    auth.redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+    auth.refresh_token = ENV['GOOGLE_REFRESH_TOKEN']
+    auth.fetch_access_token!
+    sesh = GoogleDrive.login_with_oauth(auth.access_token)
     ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[1]
     (2..27).each do |i|
       un = ws[i, 3]
       if un == session['user_name']
+        @missing = []
 	@grade = ws[i,4]
+	for col in 5..ws.num_cols
+          if ws[i,col] != "1"
+            @missing << ws[1,col]
+	  end
+	end
       end
     end
   end
