@@ -14,6 +14,15 @@ URL = ENV['GH_URL']
 
 get '/' do
   session['access_token'] ||= ''
+  @client_id = CLIENT_ID
+  @access_token = session['access_token']
+  @url = URL
+  @user_name = session['user_name']
+  @avatar_url = session['avatar_url']
+  erb :index
+end
+
+get '/grades' do
   if session['user_name']
     client = Google::APIClient.new
     auth = client.authorization
@@ -29,7 +38,7 @@ get '/' do
     ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[1]
     (2..27).each do |i|
       un = ws[i, 3]
-      if un == session['user_name']
+      if un.downcase == session['user_name'].downcase
         @missing = []
 	@grade = ws[i,4]
 	for col in 5..ws.num_cols
@@ -40,12 +49,7 @@ get '/' do
       end
     end
   end
-  @client_id = CLIENT_ID
-  @access_token = session['access_token']
-  @url = URL
-  @user_name = session['user_name']
-  @avatar_url = session['avatar_url']
-  erb :index
+  {missing: @missing, grade: @grade}.to_json
 end
 
 get '/logout' do
