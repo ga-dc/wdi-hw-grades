@@ -9,10 +9,6 @@
     }
     var grade = data.grade
     document.querySelector('[data-grade]').innerHTML = grade
-    var bar = document.createElement('div')
-    bar.style.width = grade
-    bar.classList.add('bar')
-    document.querySelector('[data-grade]').appendChild(bar)
     var missing = document.querySelector('[data-missing]')
     for( var i = 0, len = data.missing.length; i < len; i++ ){
       var assignment = document.createElement("li") 

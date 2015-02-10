@@ -54,16 +54,3 @@ header li a{
   position:relative;
 }
 
-.bar{
-  display:block;
-  transition:all 2s ease;
-  position:absolute;
-  height:100%;
-  width:0px;
-  margin-left:-1em;
-  margin-right:-1em;
-  top:0;
-  left:0;
-  background:lightgreen;
-}
-
