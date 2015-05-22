@@ -38,7 +38,7 @@ get '/grades' do
     auth.fetch_access_token!
     sesh = GoogleDrive.login_with_oauth(auth.access_token)
     ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[2]
-    (4..46).each do |i|
+    (4..47).each do |i|
       un = ws[i, 6]
       if un.downcase == session['user_name'].downcase
         @missing = []
