@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'sinatra/reloader'
 require 'rest-client'
 require 'json'
 require 'google_drive'
@@ -35,15 +36,16 @@ get '/grades' do
     auth.refresh_token = ENV['GOOGLE_REFRESH_TOKEN']
     auth.fetch_access_token!
     sesh = GoogleDrive.login_with_oauth(auth.access_token)
-    ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[1]
-    (2..27).each do |i|
-      un = ws[i, 3]
+    ws = sesh.spreadsheet_by_key(ENV['SPREADSHEET_KEY']).worksheets[2]
+    (4..46).each do |i|
+      un = ws[i, 6]
       if un.downcase == session['user_name'].downcase
         @missing = []
-	@grade = ws[i,4]
-	for col in 5..ws.num_cols
-          if ws[i,col] != "1"
-            @missing << ws[1,col]
+	@grade = "#{100 - ws[i,7].to_i}%"
+	for col in 9..ws.num_cols
+          if ws[i,col] != "c" && ws[i,col]  != "i"
+	    wd = ws[1,col].split(":")
+            @missing << "Week #{wd[0]}, Day #{wd[1]}"
 	  end
 	end
       end
