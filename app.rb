@@ -70,7 +70,6 @@ get '/callback' do
   session['access_token'] = CGI::parse(result)['access_token'][0]
   user = JSON.parse(HTTParty.get('https://api.github.com/user?access_token=' + session['access_token']).body)
   session['user_name'] = user['login']
-  session['user_name'] = "uhhlittle"
   session['avatar_url'] = user['avatar_url']
   redirect to('/');
 end
