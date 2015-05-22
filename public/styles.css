@@ -38,10 +38,6 @@ header li a{
   color:inherit;
 }
 
-[data-missing] a:hover{
-  padding-left:1.5em;
-}
-
 [data-missing] li:nth-child(1) a{
   border-top: 1px solid #ddd;
 }
