@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-contrib'
-gem 'rest-client'
+gem 'httparty'
 gem 'pry'
 gem 'json'
 gem 'google_drive'

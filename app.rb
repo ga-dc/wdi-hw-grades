@@ -1,7 +1,8 @@
 require 'sinatra'
 require 'sinatra/reloader'
-require 'rest-client'
+require 'httparty'
 require 'json'
+require 'cgi'
 require 'google_drive'
 require './env' if File.exists?('env.rb')
 require 'pry'
@@ -61,14 +62,15 @@ end
 
 get '/callback' do
   session_code = request.env['rack.request.query_hash']['code']
-  result = RestClient.post('https://github.com/login/oauth/access_token', {
+  result = HTTParty.post('https://github.com/login/oauth/access_token', :body => {
       :client_id => CLIENT_ID,
       :client_secret => CLIENT_SECRET,
       :code => session_code
-  },  :accept => :json)
-  session['access_token'] = JSON.parse(result)['access_token']
-  user = JSON.parse(RestClient.get('https://api.github.com/user?access_token=' + session['access_token']))
+  })
+  session['access_token'] = CGI::parse(result)['access_token'][0]
+  user = JSON.parse(HTTParty.get('https://api.github.com/user?access_token=' + session['access_token']).body)
   session['user_name'] = user['login']
+  session['user_name'] = "uhhlittle"
   session['avatar_url'] = user['avatar_url']
   redirect to('/');
 end
